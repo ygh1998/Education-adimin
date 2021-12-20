@@ -79,7 +79,14 @@
               <template v-if="item.type == 'search'"
                 ><searchBar :placeholder="item.placeholder"></searchBar
               ></template>
-              <template v-if="item.type == 'list'" ><div>列表</div></template>
+              <template v-if="item.type == 'list'"
+                ><list
+                  :title="item.title"
+                  :showMore="item.showMore"
+                  :list="item.data"
+                  :listType="item.listType"
+                ></list
+              ></template>
             </div>
           </div>
         </el-card>
@@ -105,7 +112,11 @@
             top: 60px;
           "
         >
-          <compenentForm ref="compenentForm" :formType="currentComponent.type" @change="onCurrentComponentChange"></compenentForm>
+          <compenentForm
+            ref="compenentForm"
+            :formType="currentComponent.type"
+            @change="onCurrentComponentChange"
+          ></compenentForm>
         </div>
       </el-card>
     </div>
@@ -115,11 +126,14 @@
 <script>
 import searchBar from "./components/search-bar";
 import compenentForm from "./components/compenent-form";
+import list from "./components/list";
 import util from "@/utils/util.js";
+import List from "@/views/example/list.vue";
 export default {
   components: {
     searchBar,
     compenentForm,
+    list,
   },
   data() {
     return {
@@ -129,9 +143,9 @@ export default {
           title: "课程列表",
           type: "list",
           default: {
-            listType: "two",
-            title: "标题",
-            showMore: false,
+            listType: "one",
+            title: "最新列表",
+            showMore: true,
             more: false,
             data: [],
           },
@@ -150,19 +164,19 @@ export default {
   },
   computed: {
     // 当前选中组件
-    currentComponent (){
-      let i = this.templates.findIndex(v => v.checked)
-      return this.templates[i] || {}
-    }
+    currentComponent() {
+      let i = this.templates.findIndex((v) => v.checked);
+      return this.templates[i] || {};
+    },
   },
   methods: {
     // 监听组件的变化
     onCurrentComponentChange(e) {
-      console.log(e)
-      let i = this.templates.findIndex(v => v.checked)
-      console.log(this.templates[i])
-      if( i != -1) {
-        this.templates[i][e.key] = e.value
+      console.log(e);
+      let i = this.templates.findIndex((v) => v.checked);
+      console.log(this.templates[i]);
+      if (i != -1) {
+        this.templates[i][e.key] = e.value;
       }
     },
     // 点击组件
@@ -179,8 +193,8 @@ export default {
         return v;
       });
       row.checked = true;
-      console.log(row)
-      this.$refs.compenentForm.initVal(row)
+      console.log(row);
+      this.$refs.compenentForm.initVal(row);
     },
     deleteComponent(index) {
       this.$confirm("是否要删除该组件?", "提示", {

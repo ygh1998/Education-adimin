@@ -5,6 +5,8 @@
       :visible.sync="dialogVisible"
       width="70%"
       top="5vh"
+      :modal-append-to-body="false"
+      append-to-body
     >
       <el-container style="height: 71vh">
         <el-header style="margin-top: -30px; margin-bottom: -30px">
