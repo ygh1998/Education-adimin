@@ -48,12 +48,15 @@
 
           <el-form-item label-width="0">
             <div class="choose-course-btn">
-              <el-button icon="el-icon-circle-plus-outline" type="text" @click="addColumn()"
+              <el-button
+                icon="el-icon-circle-plus-outline"
+                type="text"
+                @click="addColumn()"
                 >关联课程</el-button
               >
               <span>最多关联10门</span>
             </div>
-            <drag-course :list="list.data"></drag-course>
+            <drag-course :list="list.data" @del="deleteCourse"></drag-course>
           </el-form-item>
         </template>
       </el-form>
@@ -91,6 +94,24 @@ export default {
     };
   },
   methods: {
+    // 删除课程
+    deleteCourse(row) {
+      this.$confirm("是否要取消该课程关联", "提示", {
+        confirmButtonText: "确定",
+        cancelButtonText: "取消",
+        type: "success",
+      }).then(() => {
+        let i = this[this.formType].data.findIndex((v) => v.id == row.id);
+        if (i !== -1) {
+          this[this.formType].data.splice(i, 1);
+          this.$message({
+            message: "取消该课程关联成功",
+            type: "success",
+          });
+        }
+      });
+      // console.log(row)
+    },
     // 监听变化
     handleChange(key) {
       this.$emit("change", {
@@ -106,10 +127,10 @@ export default {
       // this.search.placeholder = val.placeholder
     },
     addColumn() {
-      this.$refs.openDialog.openDialog((val)=>{
-          this[this.formType].data = [...this[this.formType].data ,...val]
-          this.handleChange('data')
-      },50)
+      this.$refs.openDialog.openDialog((val) => {
+        this[this.formType].data = [...this[this.formType].data, ...val];
+        this.handleChange("data");
+      }, 50);
     },
   },
 };
